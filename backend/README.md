@@ -18,7 +18,7 @@ FastAPI backend for the Synora AI prototype.
 cd "C:\sandhiya project\NeuroGuardAI\backend"
 python -m venv .venv
 .\.venv\Scripts\python.exe -m ensurepip --upgrade
-.\.venv\Scripts\python.exe -m pip install --only-binary=:all: -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install --only-binary=:all: -r requirements-full.txt
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 7985 --reload
 ```
 

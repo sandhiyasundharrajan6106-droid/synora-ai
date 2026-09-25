@@ -1,8 +1,8 @@
-import numpy as np
-
 try:
+    import numpy as np
     from sklearn.ensemble import RandomForestClassifier
 except (ImportError, OSError):
+    np = None
     RandomForestClassifier = None
 
 
@@ -91,9 +91,9 @@ class PrototypeScreeningModel:
         for key in key_order:
             vector.append(float(feature_vector.get(key, 0.0)))
 
-        array = np.array([vector], dtype=float)
         screening_score = self._compute_score(feature_vector)
-        if self.model is not None:
+        if self.model is not None and np is not None:
+            array = np.array([vector], dtype=float)
             predicted_label = self.model.predict(array)[0]
             model_family = "RandomForestClassifier"
         elif screening_score >= 78:

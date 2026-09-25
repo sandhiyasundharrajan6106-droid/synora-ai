@@ -1,8 +1,10 @@
 import json
+import os
 import sqlite3
 from pathlib import Path
 
-DB_PATH = Path(__file__).resolve().parents[1] / "neuroguard.db"
+default_db_path = Path(__file__).resolve().parents[1] / "neuroguard.db"
+DB_PATH = Path(os.getenv("NEUROGUARD_DB_PATH", "/tmp/neuroguard.db" if os.getenv("VERCEL") else default_db_path))
 
 
 def get_connection():

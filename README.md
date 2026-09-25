@@ -50,7 +50,7 @@ npm run dev
 cd "C:\sandhiya project\NeuroGuardAI\backend"
 python -m venv .venv
 .\.venv\Scripts\python.exe -m ensurepip --upgrade
-.\.venv\Scripts\python.exe -m pip install --only-binary=:all: -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install --only-binary=:all: -r backend\requirements-full.txt
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 7985 --reload
 ```
 
@@ -62,13 +62,17 @@ Set the API URL in the frontend:
 VITE_API_URL=http://localhost:7985
 ```
 
+### Vercel deployment
+
+The root `requirements.txt` is intentionally lightweight for Vercel's serverless function size limit. The deploy entrypoint is `api/index.py`; the local full ML/computer-vision stack remains available through `backend\requirements-full.txt`.
+
 ## Troubleshooting on Windows PowerShell
 
 - If port `7985` reports `WinError 10048`, the backend is already running. Use `http://localhost:7985/health` instead of starting another server.
 - Do not run `pip install ...`; the three dots are not a package name. Use the complete requirements command:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install --only-binary=:all: -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install --only-binary=:all: -r backend\requirements-full.txt
 ```
 - After installing Git, close and reopen the VS Code terminal so the `git` command is added to PATH. In the current terminal, use `$env:Path = "C:\Program Files\Git\cmd;" + $env:Path` as a temporary refresh.
 
