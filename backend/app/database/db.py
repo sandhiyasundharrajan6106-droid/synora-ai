@@ -8,6 +8,7 @@ DB_PATH = Path(os.getenv("NEUROGUARD_DB_PATH", "/tmp/neuroguard.db" if os.getenv
 
 
 def get_connection():
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn

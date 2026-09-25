@@ -11,8 +11,7 @@ class PrototypeScreeningModel:
 
     def __init__(self):
         self.model = None
-        self.training_data = np.array(
-            [
+        self.training_data = [
                 [85, 88, 210, 82, 95, 92, 12, 30],
                 [80, 84, 230, 78, 90, 88, 18, 35],
                 [78, 80, 245, 75, 88, 84, 24, 38],
@@ -25,11 +24,8 @@ class PrototypeScreeningModel:
                 [78, 82, 230, 77, 88, 90, 18, 30],
                 [70, 74, 270, 68, 80, 76, 28, 40],
                 [58, 62, 330, 56, 72, 68, 38, 52],
-            ],
-            dtype=float,
-        )
-        self.labels = np.array(
-            [
+        ]
+        self.labels = [
                 "LOWER INDICATION",
                 "LOWER INDICATION",
                 "LOWER INDICATION",
@@ -42,16 +38,16 @@ class PrototypeScreeningModel:
                 "LOWER INDICATION",
                 "FURTHER EVALUATION RECOMMENDED",
                 "HIGHER INDICATION",
-            ],
-            dtype=object,
-        )
-        if RandomForestClassifier is not None:
+        ]
+        if RandomForestClassifier is not None and np is not None:
+            training_data = np.array(self.training_data, dtype=float)
+            labels = np.array(self.labels, dtype=object)
             self.model = RandomForestClassifier(
                 n_estimators=200,
                 random_state=42,
                 class_weight="balanced",
             )
-            self.model.fit(self.training_data, self.labels)
+            self.model.fit(training_data, labels)
 
     def _compute_score(self, feature_vector):
         eye_tracking_score = float(feature_vector.get("eye_tracking_score", 50.0))
