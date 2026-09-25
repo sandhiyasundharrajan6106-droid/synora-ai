@@ -750,6 +750,14 @@ button {
   margin-top: 20px;
 }
 
+.results-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .history-card {
   display: flex;
   justify-content: space-between;

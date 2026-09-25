@@ -52,6 +52,27 @@ export default function ResultsPage({ session, navigate }) {
   const handleDownload = async () => {
     try {
       const assessmentId = result.assessment_id || result.id;
+      if (!assessmentId) {
+        const localReport = [
+          'SYNORA AI LOCAL DEMO REPORT',
+          '===========================',
+          `Name: ${session.profile?.name || 'N/A'}`,
+          `Assessment date: ${session.profile?.assessment_date || 'N/A'}`,
+          `Prototype screening score: ${screeningScore.toFixed(2)}`,
+          `Preliminary screening indication: ${result.screening_indication || 'N/A'}`,
+          '',
+          'This tool is for preliminary screening and educational purposes only. It does not replace professional medical evaluation.',
+          'NOT A MEDICAL DIAGNOSIS.',
+        ].join('\n');
+        const blob = new Blob([localReport], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'synora-local-demo-report.txt';
+        link.click();
+        URL.revokeObjectURL(url);
+        return;
+      }
       const response = await getJson(`/api/report/${assessmentId}`);
       const blob = new Blob([response.content], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
@@ -73,7 +94,10 @@ export default function ResultsPage({ session, navigate }) {
             <h2>SYNORA AI</h2>
             <p className="muted">SCREENING SUMMARY</p>
           </div>
-          <button className="secondary-btn" onClick={() => navigate('/history')}>Assessment history</button>
+          <div className="results-actions">
+            {result.offline_demo && <span className="status-chip warning">LOCAL DEMO MODE</span>}
+            <button className="secondary-btn" onClick={() => navigate('/history')}>Assessment history</button>
+          </div>
         </div>
 
         <div className="results-grid">

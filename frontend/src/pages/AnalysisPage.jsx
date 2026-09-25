@@ -2,6 +2,34 @@ import { useState } from 'react';
 import { postJson } from '../services/api';
 import Disclaimer from '../components/Disclaimer';
 
+function buildLocalDemoResult(session) {
+  const eye = Number(session.eyeAnalysis?.tracking_score || 0);
+  const consistency = Number(session.eyeAnalysis?.consistency || 0);
+  const reactionConsistency = Number(session.reaction?.consistency || 0);
+  const memory = Number(session.memory?.memory_score || 0);
+  const attention = Number(session.attention?.attention_score || 0);
+  const symptomScore = ((session.symptoms || []).length / 10) * 100;
+  const delay = Number(session.eyeAnalysis?.response_delay || 200);
+  const score = Math.round(Math.max(0, Math.min(100,
+    eye * 0.18
+    + consistency * 0.18
+    + reactionConsistency * 0.16
+    + memory * 0.18
+    + attention * 0.18
+    + (100 - symptomScore) * 0.08
+    + Math.max(0, 100 - Math.min(delay, 500)) * 0.04,
+  )) * 100) / 100;
+
+  return {
+    status: 'success',
+    assessment_id: null,
+    screening_score: score,
+    screening_indication: score >= 78 ? 'LOWER INDICATION' : score >= 58 ? 'FURTHER EVALUATION RECOMMENDED' : 'HIGHER INDICATION',
+    offline_demo: true,
+    disclaimer: 'This local demo result is for preliminary screening and educational purposes only. It does not replace professional medical evaluation.',
+  };
+}
+
 export default function AnalysisPage({ session, updateSession, navigate, resetSession }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -26,7 +54,8 @@ export default function AnalysisPage({ session, updateSession, navigate, resetSe
       updateSession({ result: response });
       navigate('/results');
     } catch (err) {
-      setError('The backend could not complete the screening analysis. Please try again.');
+      updateSession({ result: buildLocalDemoResult(session) });
+      navigate('/results');
     } finally {
       setLoading(false);
     }
